@@ -9,6 +9,8 @@ use App\Job;
 
 class JobsTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function the_jobs_show_route_can_be_accesed(){
         // $this->withoutExceptionHandling();
@@ -16,7 +18,7 @@ class JobsTest extends TestCase
         // Arrange
         // Dodajemy do bazy wpis
 
-        $job = Job::create([
+        $job = factory(Job::class)->create([
             'name' => 'Billboard Arhelanu',
         ]);
 
@@ -29,5 +31,16 @@ class JobsTest extends TestCase
         // Sprawdzamy czy w odpowiedzi znajduje się nazwa pracy
 
         $response->assertStatus(200)->assertSeeText('Billboard Arhelanu');
+    }
+
+    /** @test */
+    public function the_discription_attribute_is_shown_on_the_jobs_show_view(){
+        $job = factory(Job::class)->create([
+            'discription' => 'Billboard standard obok biura'
+        ]);
+
+        $response = $this->get('/jobs/' . $job ->id);
+
+        $response->assertSeeText('Billboard standard obok biura');
     }
 }
