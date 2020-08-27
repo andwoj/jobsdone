@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Job;
+use Carbon\Carbon;
 
 class JobsTest extends TestCase
 {
@@ -42,5 +43,24 @@ class JobsTest extends TestCase
         $response = $this->get('/jobs/' . $job ->id);
 
         $response->assertSeeText('Billboard standard obok biura');
+    }
+
+    /** @test */
+    public function only_accomplished_jobs_are_shown_on_the_jobs_index_view(){
+        $this->withoutExceptionHandling();
+        
+        $accomplishedJob = factory(Job::class)->create([
+            'accomplished_at' => Carbon::yesterday(),
+        ]);
+
+        $unaccomplishedJob = factory(Job::class)->create([
+            'accomplished_at' => Carbon::tomorrow(),
+        ]);
+
+        $response = $this->get('/jobs/');
+
+        $response->assertStatus(200)
+            ->assertSeeText($accomplishedJob->name)
+            ->assertDontSeeText($unaccomplishedJob->name);
     }
 }

@@ -17,6 +17,7 @@ class CreateJobsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('discription');
+            $table->datetime('accomplished_at')->nullable();
             $table->timestamps();
         });
     }

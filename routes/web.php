@@ -22,3 +22,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/jobs/{job}', 'JobController@show');
+
+Route::get('/jobs/', 'JobController@index');
